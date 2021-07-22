@@ -51,7 +51,7 @@ class Regular extends Contents {
                     lgp_tags = :tags
                 WHERE lgp_id = :id',
             );
-            $update->bindValue(':content', ...(!\is_null($content) ? [$this->normalizeQuery($content), PDO::PARAM_LOB] : [$content, PDO::PARAM_NULL]));
+            $update->bindValue(':content', ...(!\is_null($content) ? [$this->normalizeQuery(\strip_tags($content)), PDO::PARAM_LOB] : [$content, PDO::PARAM_NULL]));
             $children = [];
             foreach ($this->children as $child) {
                 $children[] = (string) $child->id;
