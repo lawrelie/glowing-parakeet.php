@@ -66,7 +66,7 @@ class Regular extends Contents {
                     ':id' => $id,
                     ':author' => (string) $this->author?->id,
                     ':children' => !$children ? '' : \serialize($children),
-                    ':date' => !$date ? '' : $date->format('c'),
+                    ':date' => !$date ? '' : $date->dateTime->format('c'),
                     ':description' => $this->normalizeQuery($this->description),
                     ':mtime' => $parakeet->createDateTime()->format('c'),
                     ':name' => $this->normalizeQuery($this->name),
