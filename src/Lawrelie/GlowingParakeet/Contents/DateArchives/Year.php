@@ -6,7 +6,7 @@ class Year extends DateArchive {
     private array $children = [];
     public function __get(string $name): mixed {
         $parent = parent::__get($name);
-        return 'children' === $name ? [...$parent, ...$this->children] : $parent;
+        return 'children' === $name ? [...$parent, ...$this->$name] : $parent;
     }
     public function createChild(mixed $datetime, ?string $className = Month::class): lgp\Contents\Contents {
         $month = parent::createChild($datetime, $className);

@@ -11,7 +11,7 @@ class DateArchive extends lgp\Contents\Contents {
         }
     }
     public function __get(string $name): mixed {
-        return 'children' === $name ? $this->children : parent::__get($name);
+        return 'children' === $name ? $this->$name : parent::__get($name);
     }
     public function createChild(mixed $datetime, ?string $className = self::class): parent {
         $archive = parent::createChild(['dateTime' => $datetime], $className);
