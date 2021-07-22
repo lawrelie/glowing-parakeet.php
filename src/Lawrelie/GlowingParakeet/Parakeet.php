@@ -8,7 +8,7 @@ class Parakeet {
             throw new DomainException;
         }
         $this->setReadableProperties($properties);
-        if (!$this->current || !$this->index) {
+        if (!$this->index || !$this->current) {
             throw new DomainException;
         }
     }
