@@ -246,21 +246,25 @@ class Contents {
         return $prev;
     }
     protected function readProperty_query(): array {
-        $query = [];
-        list($column, $prefix) = match (true) {
-            $this->isTag => ['lgp_tags', '%'],
-            $this->isUser => ['lgp_author', ''],
-            default => ['lgp_id', ''],
+        $id = \addcslashes($this->id, '%_\\');
+        $idPrefix = $id . \addcslashes(Properties\Id::SEPARATOR, '%_\\') . '%';
+        list($where, $params) = match (true) {
+            $this->isTag => ['lgp_tags LIKE :id', [':id' => "%$id%"]],
+            $this->isUser => ['lgp_author IS :id OR lgp_author LIKE :id_prefix', [':id' => $id, ':id_prefix' => $idPrefix]],
+            default => ['lgp_id LIKE :id_prefix', [':id_prefix' => $idPrefix]],
         };
         try {
             $select = $this->parakeet->db->prepare(
                 "SELECT lgp_id FROM lgp_contents
-                WHERE $column LIKE :id_prefix AND (lgp_children ISNULL OR lgp_children IS :empty) AND (lgp_date NOT NULL OR lgp_date NOT :empty)
+                WHERE ($where) AND (lgp_children ISNULL OR lgp_children IS :empty) AND (lgp_date NOT NULL AND lgp_date IS NOT :empty)
                 ORDER BY lgp_date DESC",
             );
-            $select->execute([':id_prefix' => $prefix . \addcslashes($this->id . Properties\Id::SEPARATOR, '%_\\') . '%', ':empty' => '']);
+            $select->execute($params + [':empty' => '']);
             return $select->fetchAll();
-        } catch (Throwable) {}
+        } catch (Throwable $e) {
+            var_dump((string) $e);
+            die;
+        }
         return [];
     }
     protected function readProperty_queryKey(): string {
