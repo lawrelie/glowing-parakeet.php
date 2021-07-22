@@ -57,7 +57,7 @@ class Contents {
         return false;
     }
     public function normalizeQuery(string $query): string {
-        return \mb_strtolower(\mb_convert_kana($query, 'asCKV'));
+        return \preg_replace('/\s+(?=\s)/u', '', \mb_strtolower(\trim(\mb_convert_kana($query, 'asCKV'))));
     }
     public function query(string $query): ?self {
         $id = $this->id . Properties\Id::SEPARATOR . $this->id->normalize($query);
