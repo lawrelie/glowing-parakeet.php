@@ -261,10 +261,7 @@ class Contents {
             );
             $select->execute($params + [':empty' => '']);
             return $select->fetchAll();
-        } catch (Throwable $e) {
-            var_dump((string) $e);
-            die;
-        }
+        } catch (Throwable) {}
         return [];
     }
     protected function readProperty_queryKey(): string {
