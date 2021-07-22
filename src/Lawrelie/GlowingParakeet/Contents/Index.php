@@ -19,11 +19,7 @@ class Index extends Contents {
     public function createSearchResults(iterable $properties, string $className = SearchResults\SearchResults::class): SearchResults\SearchResults {
         return $this->createChild($properties, $className);
     }
-    public function query(string $query): ?parent {
-        $result = parent::query($query);
-        if (!!$result) {
-            return $result;
-        }
+    public function queryAdopted(string $query): ?parent {
         $id = $this->id . Properties\Id::SEPARATOR . $this->id->normalize($query);
         foreach ($this->adoptedChildren as $child) {
             try {
@@ -47,10 +43,10 @@ class Index extends Contents {
         return $this->query($this->parakeet->directories['archives']);
     }
     protected function readProperty_dateArchives(): DateArchives\DateArchives {
-        return $this->query($this->parakeet->directories['date']);
+        return $this->queryAdopted($this->parakeet->directories['date']);
     }
     protected function readProperty_searchResults(): SearchResults\SearchResults {
-        return $this->query($this->parakeet->directories['search']);
+        return $this->queryAdopted($this->parakeet->directories['search']);
     }
     protected function readProperty_tagDirectory(): Regular {
         return $this->query($this->parakeet->directories['tags']);
