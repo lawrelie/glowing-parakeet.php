@@ -1,7 +1,7 @@
 <?php
 namespace Lawrelie\GlowingParakeet\Contents\DateArchives;
 use Lawrelie\GlowingParakeet as lgp;
-use DateTimeInterface, Throwable;
+use DateTimeInterface, DomainException, Throwable;
 class Year extends DateArchive {
     private array $children = [];
     public function __get(string $name): mixed {
@@ -13,10 +13,13 @@ class Year extends DateArchive {
         if ($month instanceof Month) {
             return $month;
         }
-        throw new \DomainException;
+        throw new DomainException;
     }
     public function query(string|DateTimeInterface $query): ?lgp\Contents\Contents {
         try {
+            if (empty($query)) {
+                throw new DomainException;
+            }
             $datetime = $query instanceof DateTimeInterface ? $query : $this->parakeet->createDateTime($query);
             try {
                 $month = $this->children[(int) $datetime->format('m')];
