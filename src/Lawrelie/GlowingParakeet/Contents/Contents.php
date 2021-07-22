@@ -111,7 +111,8 @@ class Contents {
         $children = [];
         foreach ($this->sanitizeIterator($var) as $v) {
             try {
-                $children[] = $this->createChild($this->readProperties($v));
+                $child = $this->createChild($this->readProperties($v));
+                $children[(string) $child->id] = $child;
             } catch (Throwable) {}
         }
         return $this->sortContents($children);
@@ -283,7 +284,7 @@ class Contents {
         try {
             foreach ($this->parent->tags as $tag) {
                 try {
-                    $tags[$tag->id] = $tag;
+                    $tags[(string) $tag->id] = $tag;
                 } catch (Throwable) {}
             }
         } catch (Throwable) {}
@@ -291,7 +292,7 @@ class Contents {
         foreach ($this->sanitizeStrings($var) as $v) {
             $tag = $directory->query($v);
             try {
-                $tags[$tag->id] = $tag;
+                $tags[(string) $tag->id] = $tag;
             } catch (Throwable) {}
         }
         return $directory->sortContents($tags);

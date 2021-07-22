@@ -37,7 +37,8 @@ class Index extends Contents {
         $children = [];
         foreach ($this->sanitizeIterator($var) as $v) {
             try {
-                $children[] = $this->createAdoptedChild($this->readProperties($v));
+                $child = $this->createAdoptedChild($this->readProperties($v));
+                $children[(string) $child->id] = $child;
             } catch (\Throwable) {}
         }
         return $this->sortContents($children);
