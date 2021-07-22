@@ -21,25 +21,20 @@ class DateArchives extends lgp\Contents\Contents {
             }
             $datetime = $query instanceof DateTimeInterface ? $query : $this->parakeet->createDateTime($query);
             try {
-                $year = $this->children[(int) $datetime->format('Y')];
+                $year = $this->children[$datetime->format('c')];
             } catch (Throwable) {
                 $year = $this->createChild($datetime);
-                $this->children[(int) $year->id->fromParent] = $year;
+                $this->children[$datetime->format('c')] = $year;
             }
             return $year->query($datetime);
         } catch (Throwable) {}
         $datetime = \explode(lgp\Contents\Properties\Id::SEPARATOR, $this->id->normalize($query));
-        $year = $this->sanitizeInteger($datetime[0]);
         try {
-            $archive = $this->children[$year];
+            $archive = $this->createChild($this->sanitizeInteger($datetime[0]));
         } catch (Throwable) {
-            try {
-                $archive = $this->createChild($year);
-            } catch (Throwable) {
-                return null;
-            }
-            $this->children[(int) $archive->id->fromParent] = $archive;
+            return null;
         }
+        $this->children[$archive->dateTime->format('c')] = $archive;
         \array_shift($datetime);
         if (!$datetime) {
             return $archive;

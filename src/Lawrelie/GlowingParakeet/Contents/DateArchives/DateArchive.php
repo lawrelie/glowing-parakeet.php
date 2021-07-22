@@ -22,17 +22,12 @@ class DateArchive extends lgp\Contents\Contents {
     }
     public function query(string $query): ?parent {
         $datetime = \explode(lgp\Contents\Properties\Id::SEPARATOR, $this->id->normalize($query));
-        $number = $this->sanitizeInteger($datetime[0]);
         try {
-            $archive = $this->children[$number];
+            $archive = $this->createChild($this->sanitizeInteger($datetime[0]));
         } catch (Throwable) {
-            try {
-                $archive = $this->createChild($number);
-            } catch (Throwable) {
-                return null;
-            }
-            $this->children[(int) $archive->id->fromParent] = $archive;
+            return null;
         }
+        $this->children[$archive->dateTime->format('c')] = $archive;
         \array_shift($datetime);
         if (!$datetime) {
             return $archive;

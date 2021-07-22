@@ -22,10 +22,10 @@ class Year extends DateArchive {
             }
             $datetime = $query instanceof DateTimeInterface ? $query : $this->parakeet->createDateTime($query);
             try {
-                $month = $this->children[(int) $datetime->format('m')];
+                $month = $this->children[$datetime->format('c')];
             } catch (Throwable) {
                 $month = $this->createChild($datetime);
-                $this->children[(int) $month->id->fromParent] = $month;
+                $this->children[$datetime->format('c')] = $month;
             }
             $day = $month->query($datetime);
             return !$day ? $month : $day;
