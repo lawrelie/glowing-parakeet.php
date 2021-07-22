@@ -30,7 +30,10 @@ class Year extends DateArchive {
             $day = $month->query($datetime);
             return !$day ? $month : $day;
         } catch (Throwable) {}
-        return parent::query($query);
+        try {
+            return parent::query($query);
+        } catch (Throwable) {}
+        return null;
     }
     protected function readProperty_dateTime(mixed $var): ?\DateTimeInterface {
         $datetime = parent::readProperty_dateTime($var);
