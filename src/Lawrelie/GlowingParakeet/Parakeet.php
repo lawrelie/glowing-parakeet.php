@@ -36,6 +36,12 @@ class Parakeet {
                 return $current;
             }
         } catch (Throwable) {}
+        try {
+            $current = $index->searchResults->query($this->sanitizeString($_GET[$queryKeys['search']]));
+            if (!!$current) {
+                return $current;
+            }
+        } catch (Throwable) {}
         return $index;
     }
     protected function readProperty_db(mixed $var): ?PDO {
