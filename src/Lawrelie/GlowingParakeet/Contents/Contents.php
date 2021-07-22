@@ -87,8 +87,11 @@ class Contents {
         } catch (Throwable) {}
         foreach ($rows as $row) {
             try {
-                $contents[] = $index->query($index->id->relativeTo($row['lgp_id']));
-                continue;
+                $result = $index->query($index->id->relativeTo($row['lgp_id']));
+                if ((string) $result->id === $row['lgp_id']) {
+                    $contents[] = $result;
+                    continue;
+                }
             } catch (Throwable) {}
             try {
                 $delete->execute([$row['lgp_id']]);
