@@ -27,7 +27,7 @@ class Month extends DateArchive {
                 $day = $this->createChild($datetime);
                 $this->children[(int) $day->id->fromParent] = $day;
             }
-            return $day->query($datetime);
+            return $day;
         } catch (Throwable) {}
         return parent::query($query);
     }
