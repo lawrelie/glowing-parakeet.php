@@ -1,13 +1,13 @@
 <?php
 namespace Lawrelie\GlowingParakeet\Contents\DateArchives;
 use Lawrelie\GlowingParakeet as lgp;
-use DateTimeInterface, Throwable;
+use DateTimeInterface, DomainException, Throwable;
 class DateArchive extends lgp\Contents\Contents {
     private array $children = [];
     public function __construct(...$args) {
         parent::__construct(...$args);
         if (!$this->dateTime) {
-            throw new \DomainException;
+            throw new DomainException;
         }
     }
     public function __get(string $name): mixed {
@@ -18,7 +18,7 @@ class DateArchive extends lgp\Contents\Contents {
         if ($archive instanceof self) {
             return $archive;
         }
-        throw new \DomainException;
+        throw new DomainException;
     }
     public function query(string $query): ?parent {
         $datetime = \explode(lgp\Contents\Properties\Id::SEPARATOR, $this->id->normalize($query));
