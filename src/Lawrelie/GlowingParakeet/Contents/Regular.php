@@ -54,7 +54,6 @@ class Regular extends Contents {
                     lgp_tags = :tags
                 WHERE lgp_id = :id',
             );
-            $update->bindValue(':content', ...(!\is_null($content) ? [$this->normalizeQuery(\strip_tags($content)), PDO::PARAM_LOB] : [$content, PDO::PARAM_NULL]));
             $children = [];
             foreach ($this->children as $child) {
                 $children[] = (string) $child->id;
@@ -69,6 +68,7 @@ class Regular extends Contents {
                     ':id' => $id,
                     ':author' => (string) $this->author?->id,
                     ':children' => !$children ? '' : \serialize($children),
+                    ':content' => $this->normalizeQuery(\strip_tags($content)),
                     ':date' => !$date ? '' : $date->dateTime->format('c'),
                     ':description' => $this->normalizeQuery($this->description),
                     ':mtime' => $parakeet->createDateTime()->format('c'),
