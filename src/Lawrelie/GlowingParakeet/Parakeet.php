@@ -69,6 +69,9 @@ class Parakeet {
         }
         return $var;
     }
+    protected function readProperty_dev(mixed $var): bool {
+        return $this->sanitizeBoolean($var);
+    }
     protected function readProperty_directories(mixed $var): array {
         $keys = ['archives', 'date', 'search', 'tags', 'users'];
         return \array_filter($this->sanitizeStrings($var), fn(string $v): bool => '' !== $v) + \array_combine($keys, $keys);

@@ -13,9 +13,14 @@ class Regular extends Contents {
             return false;
         }
         $this->inserted = true;
-        $db = $this->parakeet->db;
+        $parakeet = $this->parakeet;
+        $db = $parakeet->db;
         if (!$db) {
             return false;
+        }
+        $date = $this->date;
+        if (!$parakeet->dev && 1 === $date?->dateTime->diff(\date_create())->invert) {
+            throw new DomainException;
         }
         $inTransaction = $db->inTransaction();
         try {
@@ -56,7 +61,6 @@ class Regular extends Contents {
             foreach ($this->children as $child) {
                 $children[] = (string) $child->id;
             }
-            $date = $this->date;
             $tags = [];
             foreach ($this->tags as $tag) {
                 $tags[] = (string) $tag->id;

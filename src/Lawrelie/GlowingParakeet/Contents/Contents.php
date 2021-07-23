@@ -9,8 +9,7 @@ class Contents {
         $idFromParent = null;
         try {
             $idFromParent = $this->id->fromParent;
-        } catch (Throwable) {
-        }
+        } catch (Throwable) {}
         if ('' === $idFromParent) {
             throw new DomainException;
         }
