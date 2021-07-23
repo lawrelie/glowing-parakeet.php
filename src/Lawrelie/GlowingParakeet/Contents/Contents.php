@@ -196,9 +196,15 @@ class Contents {
         return $this->is($users) || $this->isDescendantOf($users);
     }
     protected function readProperty_mtime(mixed $var): ?DateTimeInterface {
+        if ($var instanceof DateTimeInterface) {
+            return $var->setTimezone($this->parakeet->timezone);
+        }
+        $datetime = $this->sanitizeString($var);
+        if (!empty($datetime) && !\is_numeric($datetime)) {
         try {
-            return $var instanceof DateTimeInterface ? $var : $this->parakeet->createDateTime($this->sanitizeString($var));
+                return $this->parakeet->createDateTime($datetime);
         } catch (Throwable) {}
+        }
         return $this->parent?->mtime;
     }
     protected function readProperty_name(mixed $var): string {

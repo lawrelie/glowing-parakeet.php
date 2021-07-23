@@ -14,7 +14,7 @@ class Parakeet {
         }
     }
     public function createDateTime(string $datetime = 'now'): DateTimeInterface {
-        return \date_create_immutable($datetime, $this->timezone);
+        return \date_create_immutable($datetime, $this->timezone)->setTimezone($this->timezone);
     }
     public function createIndex(iterable $properties, string $className = Contents\Index::class): Contents\Index {
         return new $className($properties, $this);
