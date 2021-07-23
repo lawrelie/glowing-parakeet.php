@@ -6,6 +6,9 @@ class Regular extends Contents {
     private ?\DateTimeInterface $mtime_content = null;
     public function __construct(mixed ...$args) {
         parent::__construct(...$args);
+        if (!$this->parakeet->dev && 1 === $this->date?->dateTime->diff(\date_create())->invert) {
+            throw new DomainException;
+        }
         $this->insert();
     }
     public function insert(): bool {
@@ -13,14 +16,9 @@ class Regular extends Contents {
             return false;
         }
         $this->inserted = true;
-        $parakeet = $this->parakeet;
-        $db = $parakeet->db;
+        $db = $this->parakeet->db;
         if (!$db) {
             return false;
-        }
-        $date = $this->date;
-        if (!$parakeet->dev && 1 === $date?->dateTime->diff(\date_create())->invert) {
-            throw new DomainException;
         }
         $inTransaction = $db->inTransaction();
         try {
@@ -61,6 +59,7 @@ class Regular extends Contents {
             foreach ($this->children as $child) {
                 $children[] = (string) $child->id;
             }
+            $date = $this->date;
             $tags = [];
             foreach ($this->tags as $tag) {
                 $tags[] = (string) $tag->id;
