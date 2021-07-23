@@ -89,6 +89,9 @@ class SearchResult extends lgp\Contents\Contents {
         $this->children[$child->name] = $child;
         return $child;
     }
+    protected function readProperty_description(mixed $var): string {
+        return $this->parakeet->format['queryResult'](\count($this->query));
+    }
     protected function readProperty_id(mixed $var): lgp\Contents\Properties\Id {
         return parent::readProperty_id(\md5($this->name));
     }

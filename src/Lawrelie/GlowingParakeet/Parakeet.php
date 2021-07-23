@@ -8,6 +8,7 @@ class Parakeet {
             throw new DomainException;
         }
         $this->setReadableProperties($properties);
+        $this->datetime;
         if (!$this->index || !$this->current) {
             throw new DomainException;
         }
@@ -43,6 +44,9 @@ class Parakeet {
             }
         } catch (Throwable) {}
         return $index;
+    }
+    protected function readProperty_datetime(): DateTimeInterface {
+        return $this->createDateTime();
     }
     protected function readProperty_db(mixed $var): ?PDO {
         if (!($var instanceof PDO)) {
@@ -81,6 +85,7 @@ class Parakeet {
             'date' => fn(DateTimeInterface $datetime): string => $datetime->format('j F Y'),
             'day' => fn(DateTimeInterface $datetime): string => $datetime->format('j'),
             'month' => fn(DateTimeInterface $datetime): string => $datetime->format('F'),
+            'queryResult' => fn(int $result): string => \number_format($result, 0) . ' result' . (1 < $result ? 's' : ''),
             'year' => fn(DateTimeInterface $datetime): string => $datetime->format('Y'),
         ];
     }
