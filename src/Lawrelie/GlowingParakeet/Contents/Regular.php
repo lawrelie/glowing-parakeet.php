@@ -39,7 +39,7 @@ class Regular extends Contents {
                 $mtime = null;
             }
             $content = $this->content;
-            if (!!$mtime && 1 === $this->mtime?->diff($mtime)->invert && 1 === $this->mtime_content?->diff($mtime)->invert) {
+            if (!!$mtime && 0 === $this->mtime?->diff($mtime)->invert && (\is_null($content) || 0 === $this->mtime_content?->diff($mtime)->invert)) {
                 throw new DomainException;
             }
             $update = $db->prepare(
