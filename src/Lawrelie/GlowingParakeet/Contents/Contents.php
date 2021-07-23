@@ -152,7 +152,7 @@ class Contents {
     }
     protected function readProperty_content(mixed $var): ?string {
         $filename = $this->sanitizeString($var);
-        if ('' === $filename || !\file_exists($filename) || \is_dir($filename) || \preg_match('/^html?$/i', )) {
+        if ('' === $filename || !\file_exists($filename) || \is_dir($filename)) {
             return null;
         }
         $content = null;
@@ -201,9 +201,9 @@ class Contents {
         }
         $datetime = $this->sanitizeString($var);
         if (!empty($datetime) && !\is_numeric($datetime)) {
-        try {
+            try {
                 return $this->parakeet->createDateTime($datetime);
-        } catch (Throwable) {}
+            } catch (Throwable) {}
         }
         return $this->parent?->mtime;
     }
