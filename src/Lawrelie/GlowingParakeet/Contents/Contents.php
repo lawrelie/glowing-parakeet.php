@@ -10,7 +10,7 @@ class Contents {
         try {
             $idFromParent = $this->id->fromParent;
         } catch (Throwable) {}
-        if ('' === $idFromParent) {
+        if ('' === $idFromParent || (!$this->parakeet->dev && $this->private)) {
             throw new DomainException;
         }
     }
@@ -252,6 +252,9 @@ class Contents {
             $prev = $sibling;
         }
         return $prev;
+    }
+    protected function readProperty_private(mixed $var): bool {
+        return $this->sanitizeBoolean($var);
     }
     protected function readProperty_query(): array {
         $id = (string) $this->id;
