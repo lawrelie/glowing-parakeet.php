@@ -98,7 +98,7 @@ class SearchResult extends lgp\Contents\Contents {
     protected function readProperty_query(): array {
         $query = $this->searchQuery;
         try {
-            $select = $this->parakeet->db->prepare(\sprintf('SELECT lgp_id FROM lgp_contents WHERE %s ORDER BY lgp_mtime DESC', $query['statement']));
+            $select = $this->parakeet->db->prepare(\sprintf('SELECT lgp_id, lgp_date FROM lgp_contents WHERE %s ORDER BY lgp_mtime DESC', $query['statement']));
             $select->execute($query['parameters']);
             return $select->fetchAll();
         } catch (Throwable) {}

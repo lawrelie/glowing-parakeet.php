@@ -254,20 +254,17 @@ class Contents {
         return $prev;
     }
     protected function readProperty_query(): array {
-        $id = \addcslashes($this->id, '%_\\');
-        $idPrefix = $id . \addcslashes(Properties\Id::SEPARATOR, '%_\\') . '%';
-        list($where, $params) = match (true) {
-            $this->isTag => ['lgp_tags LIKE :id', [':id' => "%$id%"]],
-            $this->isUser => ['lgp_author IS :id OR lgp_author LIKE :id_prefix', [':id' => $id, ':id_prefix' => $idPrefix]],
-            default => ['lgp_id LIKE :id_prefix', [':id_prefix' => $idPrefix]],
+        $id = (string) $this->id;
+        $slashedId = \addcslashes($id, '%_\\');
+        $idPrefix = $slashedId . \addcslashes(Properties\Id::SEPARATOR, '%_\\') . '%';
+        list($where, $orderby, $params) = match (true) {
+            $this->isTag => ['lgp_tags LIKE :id OR lgp_tags LIKE :id_prefix', 'lgp_mtime', [':id' => \sprintf('%%"%s"%%', $slashedId), ':id_prefix' => \sprintf('%%"%s', $idPrefix)]],
+            $this->isUser => ['lgp_author IS :id OR lgp_author LIKE :id_prefix', 'lgp_mtime', [':id' => $id, ':id_prefix' => $idPrefix]],
+            default => ['lgp_id LIKE :id_prefix AND (lgp_children ISNULL OR lgp_children IS :empty) AND (lgp_date NOT NULL AND lgp_date IS NOT :empty)', 'lgp_date', [':id_prefix' => $idPrefix, ':empty' => '']],
         };
         try {
-            $select = $this->parakeet->db->prepare(
-                "SELECT lgp_id FROM lgp_contents
-                WHERE ($where) AND (lgp_children ISNULL OR lgp_children IS :empty) AND (lgp_date NOT NULL AND lgp_date IS NOT :empty)
-                ORDER BY lgp_date DESC",
-            );
-            $select->execute($params + [':empty' => '']);
+            $select = $this->parakeet->db->prepare("SELECT lgp_id, lgp_children, lgp_date FROM lgp_contents WHERE $where ORDER BY $orderby DESC");
+            $select->execute($params);
             return $select->fetchAll();
         } catch (Throwable) {}
         return [];
