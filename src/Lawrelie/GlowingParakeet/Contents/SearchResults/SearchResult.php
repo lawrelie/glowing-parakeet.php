@@ -24,14 +24,14 @@ class SearchResult extends lgp\Contents\Contents {
             $before .= \substr($query, 0, $m[0][1]);
             $query = \substr($query, $m[0][1]);
             $quoteLength = \strlen($m[0][0]);
-            if (!\preg_match($pattern, $query, $mm, \PREG_OFFSET_CAPTURE) || 0 !== $mm[0][1]) {
+            if (!\preg_match($pattern, $query, $mm, \PREG_OFFSET_CAPTURE) || !!$mm[0][1]) {
                 $before .= $m[0][0];
                 $query = \substr($query, $quoteLength);
                 continue;
             }
-            $beforeResult = $this->normalizeSearchQuery($before, '');
+            $beforeResult = $this->normalizeSearchQuery($before, $quote);
             $result = $this->normalizeSearchQuery(\trim(\substr($mm[0][0], $quoteLength, \strlen($mm[0][0]) - $quoteLength * 2)), $newQuote);
-            $afterResult = $this->normalizeSearchQuery(\substr($query, $mm[0][1]), $quote);
+            $afterResult = $this->normalizeSearchQuery(\substr($query, \strlen($mm[0][0])), $quote);
             $operator = function(string $statement, string $name): string {
                 $strWidth = \sprintf('\str_%s_with', $name);
                 return match (true) {'' === $statement => '', $strWidth($statement, 'AND'), $strWidth($statement, 'OR') => ' ', default => ' AND '};
